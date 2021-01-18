@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Projects;
+use Validator;
 
 class ProjectController extends Controller
 {
@@ -14,9 +15,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        // return Projects::find(1);
+        // return Projects::find(1)->employees;
         // $project = Projects::with('employees','teams')->get();
-        $project = Projects::with('employees','team' , 'team.employees')->get();
+        $project = Projects::with('employees' ,'team' , 'team.employees')->get();
         return $project;
     }
 
@@ -38,6 +39,16 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:55',
+            'description'  => 'required',
+       
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['error' => $validator->errors()], 401);
+        }
         $data = $request->all();
         $project= new Projects();
         $project->fill($data);
@@ -79,6 +90,16 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:55',
+            'description'  => 'required',
+       
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        
         $data = $request->all(); 
         $project = Projects::where('id' , $id)->first();       
         $project->fill($data);

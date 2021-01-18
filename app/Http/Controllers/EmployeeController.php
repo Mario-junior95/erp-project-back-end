@@ -18,7 +18,7 @@ class EmployeeController extends Controller
     public function index()
     {
         // return Employees::find(67)->roles;
-        $employees = Employees::with('teams','projects' ,'kpis', 'projects.roles')->get();
+        $employees = Employees::with('teams','projects' , 'projects.roles','kpis')->get();
         return $employees;
     }
 
@@ -53,6 +53,19 @@ class EmployeeController extends Controller
             'team_id' => $request->team_id
         ];
     
+        $validator = Validator::make($request->all(),[
+            'firstname' => 'required|min:3|max:55',
+            'lastname'  => 'required|min:3|max:55',
+            'email'     => 'required|email',
+            'image'     => 'required|image|mimes:jpeg,jpg,svg,png,gif|max:5048',
+            'phone'     => 'required|min:11|numeric',
+            'identity'  => 'required|min:5'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        
     
     
             if($request->image)

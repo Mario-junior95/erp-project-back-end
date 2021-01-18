@@ -39,6 +39,14 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|unique:team|min:3|max:55',
+     
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['error' => $validator->errors()], 401);
+        }
         $data = $request->all();
         $team = new Teams();
         $team->fill($data);
@@ -47,6 +55,7 @@ class TeamController extends Controller
             'status' => 200,
             'team' => $team
         ]);
+  
     }
 
     /**
@@ -81,7 +90,7 @@ class TeamController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(),[  
-            'name' => 'required|min:3|max:15'
+            'name' => 'required|unique:team|min:3|max:15'
         ]);
 
         if($validator->fails()){

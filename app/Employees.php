@@ -17,7 +17,7 @@ class Employees extends Model
     }
 
     public function kpis(){
-        return $this->hasMany(Kpi::class , 'employees_id' , 'id');
+        return $this->hasMany(Kpi::class  ,'employees_id' , 'id');
     }
     
     // public function projects(){
@@ -32,5 +32,4 @@ class Employees extends Model
     public function projects(){
         return $this->belongsToMany('App\Projects' , 'employees_roles_projects' , 'employee_id' , 'project_id')->using('App\Employees_Projects_Roles')->withPivot('role_id');
     }
-    
 }
